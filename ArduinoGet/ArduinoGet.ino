@@ -22,7 +22,7 @@ The following Digital Pins are used by the Wifi shield and should be considered 
 13
 
 ******************************************************************************/
-
+//2,4,6,7,8,9
 // These are the interrupt and control pins
 #define Tinysine_CC3000_IRQ   3  // MUST be an interrupt pin!
 // These can be any two pins
@@ -35,7 +35,7 @@ Tinysine_CC3000 cc3000 = Tinysine_CC3000(Tinysine_CC3000_CS, Tinysine_CC3000_IRQ
 
 //Wifi Network credentials
 #define WLAN_SSID       "Arduino24"           // Network name, cannot be longer than 32 characters!
-#define WLAN_PASS       "arduino4me"        // Network password
+#define WLAN_PASS       "password"        // Network password
 
 // Security can be WLAN_SEC_UNSEC, WLAN_SEC_WEP, WLAN_SEC_WPA or WLAN_SEC_WPA2
 #define WLAN_SECURITY   WLAN_SEC_WPA2
@@ -45,6 +45,13 @@ Tinysine_CC3000 cc3000 = Tinysine_CC3000(Tinysine_CC3000_CS, Tinysine_CC3000_IRQ
   #define WEBSITE      "royiot.meteor.com" //domain the Arduino will access
   #define WEBPAGE      "/api/getDat"        // API Get page
 
+
+//header
+#include <LiquidCrystal.h>
+
+LiquidCrystal lcd(9,8,7,4,2,6);
+long randNum;
+int buttonState = 0;
 
 String currentLine = "";
 int getVar = 0;
@@ -71,31 +78,57 @@ void setup(void)
   Serial.println(getFreeRam(), DEC);
   
   //Setting output pins, to be controlled via Wifi
+  /*
+   * Basic Milestone 1
   pinMode(7, OUTPUT);
   pinMode(6, OUTPUT);
   pinMode(5, OUTPUT);
+  */
+
+  pinMode(5, INPUT);
   
+  lcd.begin(16, 2); 
+  lcd.print("Generate a"); 
+  lcd.setCursor(0, 1); 
+  lcd.print("random number");
   
-  
-  
+ 
  /* Initialise the module */
-  connectToSite();
+  //connectToSite();
   
 /* Set initial values */
-  valueSet();
-  
+  //valueSet();
+ 
 }
 
 
 //--------------------------------------------------------
 void loop(void)
 {
-
+  buttonState = digitalRead(5);
+  if(buttonState == HIGH){
+            //when button is pressed
+            //generate a random number
+            randNum = random(100);
+            Serial.println(randNum);
+            lcd.clear();
+            lcd.begin(16, 2); 
+            lcd.print("Random Number:"); 
+            lcd.setCursor(0, 1); 
+            lcd.print(randNum);
+            delay(250);
+          }
+          else{
+            //when button is not pressed
+            
+          }
+/*
  if( millis()-lastTime > checkupTime)
  {
     Serial.println("Main Loop:");
     valueSet();
  }
+ */
  
 }
 
@@ -238,6 +271,29 @@ void valueSet()
 
 
           //Now we decide what to do with our data
+            
+          //Checks if button is pressed
+
+          /*
+          if(digitalRead(5) == HIGH){
+            //when button is pressed
+            //generate a random number
+            randNum = random(100);
+            Serial.println(randNum);
+            lcd.clear();
+            lcd.begin(16, 2); 
+            lcd.print("Random Number:"); 
+            lcd.setCursor(0, 1); 
+            lcd.print(randNum);
+            delay(1000);
+          }
+          else{
+            //when button is not pressed
+          }
+          */
+          
+          /*
+           * Basic Milestone 1
            if(getVar==3)
                    { 
                      digitalWrite(7,HIGH);
@@ -262,6 +318,7 @@ void valueSet()
                      digitalWrite(6,LOW);
                      digitalWrite(5,LOW);
                    }
+          */
                    
                    
      /* The arduReset function is a last resort.
