@@ -35,7 +35,7 @@ Tinysine_CC3000 cc3000 = Tinysine_CC3000(Tinysine_CC3000_CS, Tinysine_CC3000_IRQ
 
 //Wifi Network credentials
 #define WLAN_SSID       "Arduino24"           // Network name, cannot be longer than 32 characters!
-#define WLAN_PASS       "password"        // Network password
+#define WLAN_PASS       "nonononono"        // Network password
 
 // Security can be WLAN_SEC_UNSEC, WLAN_SEC_WEP, WLAN_SEC_WPA or WLAN_SEC_WPA2
 #define WLAN_SECURITY   WLAN_SEC_WPA2
@@ -85,7 +85,7 @@ void setup(void)
   pinMode(5, OUTPUT);
   */
 
-  pinMode(5, INPUT);
+  pinMode(A0, INPUT);
   
   lcd.begin(16, 2); 
   lcd.print("Generate a"); 
@@ -105,7 +105,7 @@ void setup(void)
 //--------------------------------------------------------
 void loop(void)
 {
-  buttonState = digitalRead(5);
+  buttonState = digitalRead(A0);
   if(buttonState == HIGH){
             //when button is pressed
             //generate a random number

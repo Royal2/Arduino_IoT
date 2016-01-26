@@ -34,20 +34,26 @@ Tinysine_CC3000 cc3000 = Tinysine_CC3000(Tinysine_CC3000_CS, Tinysine_CC3000_IRQ
                                          SPI_CLOCK_DIV2); // you can change this clock speed
 
 //Wifi Network credentials
-#define WLAN_SSID       "H4HQP"           // Network name, cannot be longer than 32 characters!
-#define WLAN_PASS       "54C8E356"        // Network password
+#define WLAN_SSID       "Arduino24"           // Network name, cannot be longer than 32 characters!
+#define WLAN_PASS       "nonononono"        // Network password
 // Security can be WLAN_SEC_UNSEC, WLAN_SEC_WEP, WLAN_SEC_WPA or WLAN_SEC_WPA2
 #define WLAN_SECURITY   WLAN_SEC_WPA2
 
 // What page to grab!
 
-  #define WEBSITE      "pefarduino2.meteor.com" //domain the Arduino will access
+  #define WEBSITE      "royiot.meteor.com" //domain the Arduino will access
   #define WEBPAGE      "/api/postDat/"        // API Get page
 
+//header
+#include <LiquidCrystal.h>
+
+LiquidCrystal lcd(9,8,7,4,2,6);
+long randNum;
+int buttonState = 0;
 
 String currentLine = "";
 int getVar = 1000;
-long checkupTime = 10000;
+long checkupTime = 1000;
 long lastTime = 0;
 long pulseStart=0;
 long cycles = 1;
@@ -66,7 +72,12 @@ void setup(void)
   Serial.print("Free RAM: ");
   Serial.println(getFreeRam(), DEC);
   
-   
+  pinMode(A0, INPUT);
+  
+  lcd.begin(16, 2); 
+  lcd.print("Generate a"); 
+  lcd.setCursor(0, 1); 
+  lcd.print("random number");
   
  /* Initialise the module */
   connectToSite();
@@ -80,7 +91,24 @@ void setup(void)
 //--------------------------------------------------------
 void loop(void)
 {
-
+  buttonState = digitalRead(A0);
+  if(buttonState == HIGH){
+            //when button is pressed
+            //generate a random number
+            randNum = random(100);
+            Serial.println(randNum);
+            lcd.clear();
+            lcd.begin(16, 2); 
+            lcd.print("Random Number:"); 
+            lcd.setCursor(0, 1); 
+            lcd.print(randNum);
+            delay(250);
+          }
+          else{
+            //when button is not pressed
+            
+          }
+          
  if( millis()-lastTime > checkupTime)
  {
     Serial.println("Main Loop:");
@@ -168,7 +196,7 @@ void valueSet()
    *   We must first turn our data into a string, then turn that string into a number;
    *   If you need more characters, you can change the 20 to something else
    */
-  postData=26;
+  postData = randNum;
   postStr = String(postData);
   int numChar = 20;
   char postChar[ numChar ] ;
