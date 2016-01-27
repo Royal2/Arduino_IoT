@@ -35,7 +35,7 @@ Tinysine_CC3000 cc3000 = Tinysine_CC3000(Tinysine_CC3000_CS, Tinysine_CC3000_IRQ
 
 //Wifi Network credentials
 #define WLAN_SSID       "Arduino24"           // Network name, cannot be longer than 32 characters!
-#define WLAN_PASS       "nonononono"        // Network password
+#define WLAN_PASS       "oleboy21"        // Network password
 // Security can be WLAN_SEC_UNSEC, WLAN_SEC_WEP, WLAN_SEC_WPA or WLAN_SEC_WPA2
 #define WLAN_SECURITY   WLAN_SEC_WPA2
 
@@ -48,8 +48,8 @@ Tinysine_CC3000 cc3000 = Tinysine_CC3000(Tinysine_CC3000_CS, Tinysine_CC3000_IRQ
 #include <LiquidCrystal.h>
 
 LiquidCrystal lcd(9,8,7,4,2,6);
-long randNum;
-int buttonState = 0;
+const int sensorPin = A0; 
+float temperature;
 
 String currentLine = "";
 int getVar = 1000;
@@ -57,7 +57,7 @@ long checkupTime = 1000;
 long lastTime = 0;
 long pulseStart=0;
 long cycles = 1;
-int postData=0;
+float postData=0;
 String postStr = "";
 
 Tinysine_CC3000_Client www;
@@ -72,12 +72,10 @@ void setup(void)
   Serial.print("Free RAM: ");
   Serial.println(getFreeRam(), DEC);
   
-  pinMode(A0, INPUT);
-  
   lcd.begin(16, 2); 
-  lcd.print("Generate a"); 
+  lcd.print("Temperature"); 
   lcd.setCursor(0, 1); 
-  lcd.print("random number");
+  lcd.print("Sensor is Ready");
   
  /* Initialise the module */
   connectToSite();
@@ -91,23 +89,27 @@ void setup(void)
 //--------------------------------------------------------
 void loop(void)
 {
-  buttonState = digitalRead(A0);
-  if(buttonState == HIGH){
-            //when button is pressed
-            //generate a random number
-            randNum = random(100);
-            Serial.println(randNum);
-            lcd.clear();
-            lcd.begin(16, 2); 
-            lcd.print("Random Number:"); 
-            lcd.setCursor(0, 1); 
-            lcd.print(randNum);
-            delay(250);
-          }
-          else{
-            //when button is not pressed
-            
-          }
+
+   int sensorVal = analogRead(sensorPin);
+  Serial.print("Sensor Value A0: "); 
+  Serial.print(sensorVal);
+  //convert the ADC reading to voltage 
+  float voltage = (sensorVal/1024.0)*5.0; 
+  //print new value to serial monitor 
+  Serial.print(", Volts: "); 
+  Serial.print(voltage);
+  //convert the voltage to temperature in degrees 
+  temperature = (voltage - .5)*100; 
+  Serial.print(", degrees C: "); 
+  Serial.println(temperature);
+
+  //display temp onto LCD
+  lcd.clear();
+  lcd.begin(16, 2); 
+  lcd.print("Temperature (C):"); 
+  lcd.setCursor(0, 1); 
+  lcd.print(temperature);
+  delay(250);
           
  if( millis()-lastTime > checkupTime)
  {
@@ -196,7 +198,7 @@ void valueSet()
    *   We must first turn our data into a string, then turn that string into a number;
    *   If you need more characters, you can change the 20 to something else
    */
-  postData = randNum;
+  postData = temperature;
   postStr = String(postData);
   int numChar = 20;
   char postChar[ numChar ] ;
