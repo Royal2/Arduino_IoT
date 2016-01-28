@@ -5,16 +5,16 @@
 </body>
 
 <template name= "inputData" >
-   <form>
+    <form>
 		<input type="text" name="inputDataVal">
 		<input type="submit" value="Input Data">
-</form>
+    </form>
 <p></p>
 <p></P>
-   <li>
-	    	<input type="button" class="value1" value="Input Value 1">
-	    	<input type="button" class="value2" value="Input Value 2">
-    	</li>
+    <li>
+        <input type="button" class="value1" value="Input Value 1">
+        <input type="button" class="value2" value="Input Value 2">
+    </li>
 </template>
 
 
@@ -22,10 +22,14 @@
 
 
 <template name="dataTemp">
-
   <p>
       {{lastVal}}
   </p>
+</template>
 
-
+<template name="alarmClock">
+    <form>
+		<input type="time" name="alarm">
+		<input type="submit" value="Set Alarm">
+    </form>
 </template>

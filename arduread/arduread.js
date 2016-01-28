@@ -60,6 +60,17 @@ if (Meteor.isClient) {
 				return valRead ;
 			}
 		});  
+    
+    
+        Template.alarmClock.events({
+			'submit form': function(event){ //Form submission
+			  event.preventDefault();
+			  //the value submitted in the form
+            var valForm = event.target.alarm.value;
+            DataID = DataColl.findOne()._id;
+			  DataColl.update(DataID ,{$set: {value: valForm} });
+			}
+		});
    }
    
  //If the URL is root, displays the input form
@@ -77,7 +88,12 @@ Router.route('/data', function () {
 
 	});
 
+//If the URL is /alarm, displays the alarm clock form
+Router.route('/alarm', function () {
+	  this.layout('alarmClock', { });
 
+
+	});
 	
 	
 
