@@ -1,10 +1,7 @@
-
-
 //packages:
 // Iron Router
 // accounts-password
 // Restivus
-
 
 // DataColl a Collection to hold the data value
 // Meteor prefers to keep values in a Collection rather than a single variable. 

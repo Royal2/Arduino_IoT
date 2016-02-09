@@ -35,7 +35,7 @@ Tinysine_CC3000 cc3000 = Tinysine_CC3000(Tinysine_CC3000_CS, Tinysine_CC3000_IRQ
 
 //Wifi Network credentials
 #define WLAN_SSID       "Arduino24"           // Network name, cannot be longer than 32 characters!
-#define WLAN_PASS       "FMinus4U"        // Network password
+#define WLAN_PASS       "URTerminated"        // Network password
 
 // Security can be WLAN_SEC_UNSEC, WLAN_SEC_WEP, WLAN_SEC_WPA or WLAN_SEC_WPA2
 #define WLAN_SECURITY   WLAN_SEC_WPA2
@@ -48,13 +48,16 @@ Tinysine_CC3000 cc3000 = Tinysine_CC3000(Tinysine_CC3000_CS, Tinysine_CC3000_IRQ
 
 //header
 #include <LiquidCrystal.h>
+#include <TimeAlarms.h>
+#include <Time.h>
+#include <TimeLib.h>
 
 LiquidCrystal lcd(9,8,7,4,2,6);
 long randNum;
 int buttonState = 0;
 
 String currentLine = "";
-int getVar = 0;
+String getVar = "";
 long checkupTime = 5000;
 long lastTime = 0;
 long cycles = 1;   
@@ -85,19 +88,24 @@ void setup(void)
   pinMode(5, OUTPUT);
   */
 
+  /*
+   * Basic Milestone 2, 3
   pinMode(A0, INPUT);
+  */
+
+  setTime(11,59,0,2,9,2016);
   
   lcd.begin(16, 2); 
-  lcd.print("Generate a"); 
+  lcd.print("Alarm Clock"); 
   lcd.setCursor(0, 1); 
-  lcd.print("random number");
+  lcd.print("");
   
  
  /* Initialise the module */
-  //connectToSite();
+  connectToSite();
   
 /* Set initial values */
-  //valueSet();
+  valueSet();
  
 }
 
@@ -105,6 +113,15 @@ void setup(void)
 //--------------------------------------------------------
 void loop(void)
 {
+  //tone(A0, 392);
+  //noTone(A0);
+  //ResetTimer();
+
+  digitalClockDisplay();  
+  delay(1000);
+  
+  /*
+   * Basic Milestone 2
   buttonState = digitalRead(A0);
   if(buttonState == HIGH){
             //when button is pressed
@@ -122,6 +139,10 @@ void loop(void)
             //when button is not pressed
             
           }
+          */
+
+
+          
 /*
  if( millis()-lastTime > checkupTime)
  {
@@ -419,3 +440,33 @@ void arduReset(){
                                   soft_restart();
 }
 
+void digitalClockDisplay(){
+  // digital clock display of the time
+  Serial.print(hour());
+  printDigits(minute());
+  printDigits(second());
+  Serial.print(" ");
+  //check for am/pm
+  if(isAM()){
+    Serial.print("AM");
+  }
+  else if(isPM()){
+    Serial.print("PM");
+  }
+  
+  Serial.print(" ");
+  Serial.print(day());
+  Serial.print("/");
+  Serial.print(month());
+  Serial.print("/");
+  Serial.print(year());
+  Serial.println();
+}
+
+void printDigits(int digits){
+  // utility function for digital clock display: prints preceding colon and leading 0
+  Serial.print(":");
+  if(digits < 10)
+    Serial.print('0');
+  Serial.print(digits);
+}
