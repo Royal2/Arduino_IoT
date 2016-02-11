@@ -35,7 +35,7 @@ Tinysine_CC3000 cc3000 = Tinysine_CC3000(Tinysine_CC3000_CS, Tinysine_CC3000_IRQ
 
 //Wifi Network credentials
 #define WLAN_SSID       "Arduino24"           // Network name, cannot be longer than 32 characters!
-#define WLAN_PASS       "URTerminated"        // Network password
+#define WLAN_PASS       "KlaatuBaradaNikto"        // Network password
 
 // Security can be WLAN_SEC_UNSEC, WLAN_SEC_WEP, WLAN_SEC_WPA or WLAN_SEC_WPA2
 #define WLAN_SECURITY   WLAN_SEC_WPA2
@@ -53,8 +53,8 @@ Tinysine_CC3000 cc3000 = Tinysine_CC3000(Tinysine_CC3000_CS, Tinysine_CC3000_IRQ
 #include <TimeLib.h>
 
 LiquidCrystal lcd(9,8,7,4,2,6);
-long randNum;
-int buttonState = 0;
+//long randNum;
+//int buttonState = 0;
 
 String currentLine = "";
 String getVar = "";
@@ -93,7 +93,7 @@ void setup(void)
   pinMode(A0, INPUT);
   */
 
-  setTime(11,59,0,2,9,2016);
+  setTime(16,57,0,2,10,2016);
   
   lcd.begin(16, 2); 
   lcd.print("Alarm Clock"); 
@@ -143,13 +143,11 @@ void loop(void)
 
 
           
-/*
  if( millis()-lastTime > checkupTime)
  {
     Serial.println("Main Loop:");
     valueSet();
  }
- */
  
 }
 
@@ -277,8 +275,9 @@ void valueSet()
          
           Serial.println("Final Reading:");
           Serial.println(currentLine);
-          getVar = currentLine.toInt(); // The last line of output will be the data we want to download.
-
+          //getVar = currentLine.toInt(); // The last line of output will be the data we want to download.
+          getVar = currentLine;
+          
           Serial.print(cycles); //Number of times the loop has run
           Serial.println(" Cycles");
           
@@ -292,7 +291,140 @@ void valueSet()
 
 
           //Now we decide what to do with our data
+
+          //Checks for alarm time
+          Serial.print("Alarm time:");
+          Serial.println(getVar);
+
+          String alarm_yyyy = getVar.substring(1,5);
+          String alarm_mm = getVar.substring(6,8);
+          String alarm_dd = getVar.substring(9,11);
+
+          //checks for am/pm
+          String alarm_h = getVar.substring(12,14);
+          String alarm_ampm = "";
+
+          //check for single digits
+          //month() and day() are revered!
+          String clock_dd = String(month()); 
+          String clock_mm = String(day());
+          if(int(month())<10){
+            clock_dd = String(0)+month();
+          }
+          if(int(day())<10){
+            clock_mm = String(0)+day();
+          }
+
+          if(alarm_h == "12"){
+            alarm_h = "12";
+            alarm_ampm = "PM";
+          }
+          else if(alarm_h == "13"){
+            alarm_h = "01";
+            alarm_ampm = "PM";
+          }
+          else if(alarm_h == "14"){
+            alarm_h = "02";
+            alarm_ampm = "PM";
+          }
+          else if(alarm_h == "15"){
+            alarm_h = "03";
+            alarm_ampm = "PM";
+          }
+          else if(alarm_h == "16"){
+            alarm_h = "04";
+            alarm_ampm = "PM";
+          }
+          else if(alarm_h == "17"){
+            alarm_h = "05";
+            alarm_ampm = "PM";
+          }
+          else if(alarm_h == "18"){
+            alarm_h = "06";
+            alarm_ampm = "PM";
+          }
+          else if(alarm_h == "19"){
+            alarm_h = "07";
+            alarm_ampm = "PM";
+          }
+          else if(alarm_h == "20"){
+            alarm_h = "08";
+            alarm_ampm = "PM";
+          }
+          else if(alarm_h == "21"){
+            alarm_h = "09";
+            alarm_ampm = "PM";
+          }
+          else if(alarm_h == "22"){
+            alarm_h = "10";
+            alarm_ampm = "PM";
+          }
+          else if(alarm_h == "23"){
+            alarm_h = "11";
+            alarm_ampm = "PM";
+          }
+          else if(alarm_h == "24"){
+            alarm_h = "12";
+            alarm_ampm = "AM";
+          }
+          else{
+            alarm_ampm = "AM";
+          }
+          
+          String alarm_m = getVar.substring(15,17);
+          String alarm_s = "0";
+
+          Serial.println(alarm_yyyy);
+          Serial.println(alarm_mm);
+          Serial.println(alarm_dd);
+          Serial.println(alarm_h);
+          Serial.println(alarm_m);
+          Serial.println(alarm_s);
+
+          Serial.println("String(year()):");
+          Serial.println(String(year()));
+
+          String clock_hour = String(hour());
+          if(hour() > 12){
+            clock_hour = hour() - 12;
+          }
+          if(hour() < 10 || hour() > 12){
+            clock_hour = String(0)+clock_hour;
+          }
+          
+          Serial.println("time comparison:");
+          Serial.println(alarm_h);
+          Serial.println(clock_hour);
+          Serial.println(alarm_m);
+          Serial.println(String(minute()));
+          Serial.println(alarm_s);
+          Serial.println(String(second()));
+          Serial.println(alarm_ampm);
+          Serial.println(isAM());
+          //compares alarm time with current time
+          if(getVar == "0"){
+            //alarm stopped
+            noTone(A0);
+            Serial.println("Alarm stopped");
             
+          }
+          else if (alarm_h.equals(clock_hour) && alarm_m.equals(String(minute())) && alarm_s.equals(String(second()))){
+            Serial.println("Time match");
+          }
+          else if(alarm_yyyy.equals(String(year())) && alarm_mm.equals(clock_mm) && alarm_dd.equals(clock_dd) && alarm_h.equals(clock_hour) && alarm_m.equals(String(minute()))){
+            
+            if(isAM() == 1 && alarm_ampm == "AM"){
+              //ring alarm
+              Serial.println("Alarm match AM");
+              tone(A0, 392);
+            }
+            else if(isPM() == 1 && alarm_ampm == "PM"){
+              //ring 
+              Serial.println("Alarm match PM");
+              tone(A0, 392);
+            }
+          }
+          
           //Checks if button is pressed
 
           /*
@@ -442,8 +574,14 @@ void arduReset(){
 
 void digitalClockDisplay(){
   // digital clock display of the time
-  Serial.print(hour());
+  int serial_hour = hour();
+  if(hour() > 12){
+    serial_hour = hour() - 12;
+  }
+  printDigits(serial_hour);
+  Serial.print(":");
   printDigits(minute());
+  Serial.print(":");
   printDigits(second());
   Serial.print(" ");
   //check for am/pm
@@ -461,12 +599,45 @@ void digitalClockDisplay(){
   Serial.print("/");
   Serial.print(year());
   Serial.println();
+
+  //print to LCD
+  lcd.begin(16, 2); 
+  //date - dd/mm/yyyy
+  lcd.print(day());
+  lcd.print("/");
+  lcd.print(month());
+  lcd.print("/");
+  lcd.print(year());
+  
+  lcd.setCursor(0, 1); 
+  //time - hh:mm:ss AM/PM
+  int clock_hour = hour();
+  if(hour() > 12){
+    clock_hour = hour() - 12;
+  }
+  printDigitsLCD(clock_hour);
+  lcd.print(":");
+  printDigitsLCD(minute());
+  lcd.print(":");
+  printDigitsLCD(second());
+  lcd.print(" ");
+  if(isAM()){
+    lcd.print("AM");
+  }
+  else if(isPM()){
+    lcd.print("PM");
+  }
 }
 
 void printDigits(int digits){
   // utility function for digital clock display: prints preceding colon and leading 0
-  Serial.print(":");
   if(digits < 10)
     Serial.print('0');
   Serial.print(digits);
+}
+
+void printDigitsLCD(int digits){
+  if(digits < 10)
+    lcd.print('0');
+  lcd.print(digits);
 }

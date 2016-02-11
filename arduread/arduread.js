@@ -66,7 +66,12 @@ if (Meteor.isClient) {
             var valForm = event.target.alarm.value;
             DataID = DataColl.findOne()._id;
 			  DataColl.update(DataID ,{$set: {value: valForm} });
-			}
+			},
+			'click .stop': function(){
+				stopVal = 0;
+				DataID = DataColl.findOne()._id;
+				DataColl.update(DataID ,{$set: {value: stopVal} });
+			},
 		});
    }
    
@@ -123,7 +128,9 @@ if (Meteor.isServer) {
   // Calling root/api/getDat will return the value of the data in DataColl
   Api.addRoute('getDat', {authRequired: false}, {
     get: function () {
-      return parseInt(DataColl.findOne({},{sort: {timestamp: -1}} ).value);
+          console.log(DataColl.findOne({},{sort: {timestamp: -1}} ).value);
+      //return parseInt(DataColl.findOne({},{sort: {timestamp: -1}} ).value);
+        return DataColl.findOne({},{sort: {timestamp: -1}} ).value;
     }
   });
 
