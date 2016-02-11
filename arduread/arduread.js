@@ -73,6 +73,29 @@ if (Meteor.isClient) {
 				DataColl.update(DataID ,{$set: {value: stopVal} });
 			},
 		});
+    
+        Template.weather.helpers({
+			'val' : function () {
+				valRead = DataColl.findOne({},{sort: {timestamp: -1}}  ).value;
+                if(valRead > 900.00){
+                    template: 'nine';
+			     }
+                else if(valRead > 700.00){
+                    template: 'seven';
+                }
+                else if(valRead > 500.00){
+                    template: 'five';
+                }
+                else if(valRead > 300.00){
+                    template: 'three';
+                }
+                else if(valRead > 100.00){
+                    template: 'one';
+                }
+				return valRead;
+			}
+				
+		});  
    }
    
  //If the URL is root, displays the input form
@@ -97,7 +120,11 @@ Router.route('/alarm', function () {
 
 	});
 	
-	
+Router.route('/weather', function () {
+	  this.layout('weather', { });
+
+
+	});
 
 // API commands
 // Best to not modify this stuff.

@@ -35,7 +35,7 @@ Tinysine_CC3000 cc3000 = Tinysine_CC3000(Tinysine_CC3000_CS, Tinysine_CC3000_IRQ
 
 //Wifi Network credentials
 #define WLAN_SSID       "Arduino24"           // Network name, cannot be longer than 32 characters!
-#define WLAN_PASS       "oleboy21"        // Network password
+#define WLAN_PASS       "KlaatuBaradaNikto"        // Network password
 // Security can be WLAN_SEC_UNSEC, WLAN_SEC_WEP, WLAN_SEC_WPA or WLAN_SEC_WPA2
 #define WLAN_SECURITY   WLAN_SEC_WPA2
 
@@ -49,7 +49,8 @@ Tinysine_CC3000 cc3000 = Tinysine_CC3000(Tinysine_CC3000_CS, Tinysine_CC3000_IRQ
 
 LiquidCrystal lcd(9,8,7,4,2,6);
 const int sensorPin = A0; 
-float temperature;
+//float temperature;
+float sensorVal=0;
 
 String currentLine = "";
 int getVar = 1000;
@@ -73,9 +74,9 @@ void setup(void)
   Serial.println(getFreeRam(), DEC);
   
   lcd.begin(16, 2); 
-  lcd.print("Temperature"); 
-  lcd.setCursor(0, 1); 
-  lcd.print("Sensor is Ready");
+  lcd.print("Weather App"); 
+  //lcd.setCursor(0, 1); 
+  //lcd.print("Sensor is Ready");
   
  /* Initialise the module */
   connectToSite();
@@ -90,9 +91,16 @@ void setup(void)
 void loop(void)
 {
 
-   int sensorVal = analogRead(sensorPin);
+  sensorVal = analogRead(sensorPin);
   Serial.print("Sensor Value A0: "); 
   Serial.print(sensorVal);
+
+  lcd.begin(16, 2); 
+  lcd.print(sensorVal);
+
+  delay (750);
+
+  /*
   //convert the ADC reading to voltage 
   float voltage = (sensorVal/1024.0)*5.0; 
   //print new value to serial monitor 
@@ -110,7 +118,7 @@ void loop(void)
   lcd.setCursor(0, 1); 
   lcd.print(temperature);
   delay(250);
-          
+    */      
  if( millis()-lastTime > checkupTime)
  {
     Serial.println("Main Loop:");
@@ -198,8 +206,10 @@ void valueSet()
    *   We must first turn our data into a string, then turn that string into a number;
    *   If you need more characters, you can change the 20 to something else
    */
-  postData = temperature;
+  postData = sensorVal;
   postStr = String(postData);
+  Serial.println("postStr");
+  Serial.println(postStr);
   int numChar = 20;
   char postChar[ numChar ] ;
   postStr.toCharArray(postChar, numChar);
